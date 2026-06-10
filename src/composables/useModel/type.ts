@@ -5,6 +5,7 @@ export interface llmMessageData {
   data?: bossZpJobItemData
   boss?: bossZpBossData
   card?: bossZpCardData
+  resumeStr?: string
   amap?: any
 }
 

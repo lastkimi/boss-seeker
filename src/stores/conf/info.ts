@@ -1,58 +1,6 @@
 import type { FormData, FormInfoData } from '@/types/formData'
 
 export const formInfoData: FormInfoData = {
-  config_level: {
-    options: [
-      {
-        value: 'beginner',
-        label: '新手',
-      },
-      {
-        value: 'intermediate',
-        label: '初学者',
-      },
-      {
-        value: 'advanced',
-        label: '中级',
-      },
-      {
-        value: 'expert',
-        label: '高级',
-      },
-    ],
-    'data-help': '为不同人群展示不同的配置项, 减少上手难度跟配置过多而产生的恐惧',
-  },
-  company: {
-    label: '公司名',
-    'data-help': '公司名排除或包含在集合中，模糊匹配，可用于只投或不投某个公司/子公司。',
-  },
-  jobTitle: {
-    label: '岗位名',
-    'data-help': '岗位名排除或包含在集合中，模糊匹配，可用于只投或不投某个岗位名。',
-  },
-  jobContent: {
-    label: '工作内容',
-    'data-help':
-      "会自动检测上文(不是,不,无需),下文(系统,工具),例子：[外包,上门,销售,驾照], 排除: '外包岗位', 不排除: '不是外包'|'销售系统'",
-  },
-  hrPosition: {
-    label: 'Hr职位',
-    'data-help':
-      'Hr职位一定包含/排除在集合中，精确匹配, 不在内置中可手动输入,能实现只向经理等进行投递，毕竟人事干的不一定是人事',
-  },
-  jobAddress: {
-    label: '工作地址',
-    'data-help': '只能为包含模式, 即投递工作地址当中必须包含当前内容中的任意一项，否则排除',
-  },
-  salaryRange: {
-    label: '薪资范围',
-    'data-help': '投递工作的薪资范围, 更多选项可看高级配置',
-  },
-  companySizeRange: {
-    label: '公司规模范围',
-    'data-help':
-      '投递工作的公司规模, 推荐使用boss自带选项进行筛选。严格宽松定义在薪资高级配置中有写',
-  },
   customGreeting: {
     label: '自定义招呼语',
     'data-help':
@@ -254,89 +202,9 @@ export const formInfoData: FormInfoData = {
       disable: true,
     },
   },
-  amap: {
-    enable: {
-      label: '启用',
-      'data-help': '启用高德地图, 用于获取工作地址的距离和时间进行筛选，需要配置自己的key',
-    },
-    key: {
-      label: '高德地图key',
-      'data-help': '高德地图key, 需要自己申请',
-    },
-    origins: {
-      label: '起点经纬度',
-      'data-help': '起点经纬度, 经度和纬度用","分隔, 可以输入完整地址点击按钮自动获取',
-    },
-    straightDistance: {
-      label: '直线距离',
-      'data-help': '直线距离, 为0禁用，单位: km',
-    },
-    drivingDistance: {
-      label: '驾车距离',
-      'data-help':
-        '驾车距离, 为0禁用，会考虑当前时间的路况，不同时间结果不一样，策略为"速度优先", 单位: km',
-    },
-    drivingDuration: {
-      label: '驾车时间',
-      'data-help':
-        '驾车时间, 为0禁用，会考虑当前时间的路况，不同时间结果不一样，策略为"速度优先", 单位: 分钟',
-    },
-    walkingDistance: {
-      label: '步行距离',
-      'data-help': '步行距离, 为0禁用，单位: km',
-    },
-    walkingDuration: {
-      label: '步行时间',
-      'data-help': '步行时间, 为0禁用，单位: 分钟',
-    },
-  },
 }
 
 export const defaultFormData: FormData = {
-  config_level: 'beginner',
-  company: {
-    include: false,
-    value: [],
-    options: [],
-    enable: false,
-  },
-  jobTitle: {
-    include: true,
-    value: [],
-    options: [],
-    enable: false,
-  },
-  jobContent: {
-    include: false,
-    value: [],
-    options: [],
-    enable: false,
-  },
-  hrPosition: {
-    include: true,
-    value: [],
-    options: ['经理', '主管', '法人', '人力资源主管', 'hr', '招聘专员'],
-    enable: false,
-  },
-  jobAddress: {
-    value: [],
-    options: [],
-    enable: false,
-  },
-  salaryRange: {
-    value: [8, 13, false],
-    advancedValue: {
-      // 默认全部关闭，避免用户未配置而投递错误岗位
-      H: [0, 1, false],
-      D: [0, 1, false],
-      M: [0, 1, false],
-    },
-    enable: false,
-  },
-  companySizeRange: {
-    value: [500, 2000, true],
-    enable: false,
-  },
   customGreeting: {
     value: '',
     enable: false,
@@ -370,7 +238,23 @@ export const defaultFormData: FormData = {
   },
   aiGreeting: {
     enable: false,
-    prompt: '',
+    model: 'deepseek-chat',
+    prompt: `我现在需要求职，请你根据我的简历和对方的工作岗位写一段求职招呼语。
+## 我的简历:
+{{ resumeStr }}
+
+## 待处理的岗位信息:
+<岗位信息>
+岗位名: {{ card.jobName }}
+薪资: {{ card.salaryDesc }}
+学历要求: {{ card.degreeName }}
+岗位标签: {{ card.jobLabels }}
+<岗位描述>
+{{ card.postDescription }}
+</岗位描述>
+</岗位信息>
+
+请输出一段自然、真诚的开场白（无需书信前缀和后缀）。`,
   },
   aiFiltering: {
     enable: false,
@@ -380,16 +264,6 @@ export const defaultFormData: FormData = {
   aiReply: {
     enable: false,
     prompt: '',
-  },
-  amap: {
-    key: '',
-    origins: '',
-    straightDistance: 0,
-    drivingDistance: 0,
-    drivingDuration: 0,
-    walkingDistance: 0,
-    walkingDuration: 0,
-    enable: false,
   },
   record: {
     enable: false,

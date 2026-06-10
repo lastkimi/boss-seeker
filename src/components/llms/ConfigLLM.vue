@@ -89,6 +89,7 @@ function importllm() {
     width="70%"
     align-center
     destroy-on-close
+    append-to-body
     :z-index="20"
   >
     <Alert id="llm-config-alert" title="注意" type="warning">
@@ -115,13 +116,13 @@ function importllm() {
       <ElTableColumn label="管理">
         <template #default="scope">
           <div v-if="scope.row.vip == null" style="width: 200px">
-            <ElButton link type="primary" size="small" @click="() => del(scope.row)">
+            <ElButton link type="primary" size="small" @click="() => del(scope.row as any)">
               删除
             </ElButton>
-            <ElButton link type="primary" size="small" @click="() => copy(scope.row)">
+            <ElButton link type="primary" size="small" @click="() => copy(scope.row as any)">
               复制
             </ElButton>
-            <ElButton link type="primary" size="small" @click="() => edit(scope.row)">
+            <ElButton link type="primary" size="small" @click="() => edit(scope.row as any)">
               编辑
             </ElButton>
           </div>

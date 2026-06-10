@@ -1,98 +1,42 @@
-> [!CAUTION]
-> 本项目仅供学习交流，禁止用于商业用途
->
-> 使用该脚本有一定风险(如黑号,封号,权重降低等)，本项目不承担任何责任
+# Boss-Seeker 🚀
 
-| Chrome                                                                                                                                                                                             | Crx搜搜                                                                                                                                           | Edge                                                                                                                                                                                                                                                                                                                           | FireFox                                                                                                                                   | Github                                                                                                                                |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/ogkmgjbagackkdlcibcailacnncgonbn?label=Chrome插件商店)](https://chrome.google.com/webstore/detail/ogkmgjbagackkdlcibcailacnncgonbn) | [![Crx 搜搜](https://img.shields.io/badge/Crx搜索-v%3F.%3F.%3F-EF7C3D)](https://www.crxsoso.com/webstore/detail/ogkmgjbagackkdlcibcailacnncgonbn) | [![Edge Web Store](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fmicrosoftedge.microsoft.com%2Faddons%2Fgetproductdetailsbycrxid%2Fjcllnbjfeamhihjpfjlclhdnjmggbgal&query=version&prefix=v&label=Edge插件商店&color=EF7C3D)](https://microsoftedge.microsoft.com/addons/detail/jcllnbjfeamhihjpfjlclhdnjmggbgal) | [![Firefox](https://img.shields.io/amo/v/boss-helper?label=Mozilla插件商店)](https://addons.mozilla.org/zh-TW/firefox/addon/boss-helper/) | [![GitHub Release](https://img.shields.io/github/v/release/Ocyss/boos-helper)](https://github.com/Ocyss/boos-helper/releases/latest/) |
+**Boss-Seeker** 是一款专为 BOSS 直聘量身打造的智能化求职增强浏览器插件。
+它深度集成了现代 AI 大模型（如 DeepSeek 等兼容 OpenAI 格式的模型），致力于全方位自动化并优化你的求职体验，提升简历投递效率。
 
-> **国内**: 如果无法访问 `Chrome插件商店` , 请使用 `Crx搜搜` 或 `Edge插件商店` 安装
+## 🎯 核心功能
 
-## 项目介绍
+*   **🤖 AI 智能打招呼 (AI Greeting)**
+    *   自动提取并分析你的在线简历。
+    *   将你的个人优势、工作经历与目标岗位的招聘要求相结合。
+    *   通过自定义 AI 大模型自动为你生成针对性的、个性化的求职招呼语。
+*   **🛡️ AI 智能防骚扰与职位过滤 (AI Filtering)**
+    *   提供基础规则和 AI 两种过滤模式。
+    *   支持自定义模型，对不匹配的职位（例如外包、非相关技术栈、薪资不符）进行自动化筛选。
+*   **✈️ 自动巡航系统 (Auto Pilot)**
+    *   利用大模型为你发散出最匹配的职位搜索关键词。
+    *   自动根据你配置的关键词轮询搜索，找到合适的岗位后自动发起投递，极大地节省手动操作时间。
+*   **📊 数据统计与复盘 (Analytics)**
+    *   自动记录每一次的投递历史和转化漏斗。
+    *   清晰的控制面板与可视化图表，帮你在寻找工作的过程中进行有效的复盘和进度管理。
+*   **✨ 现代 UI 体验 (Modern Glassmorphism UI)**
+    *   采用毛玻璃、渐变、悬浮阴影等现代设计语言的界面，全面升级传统求职辅助工具的简陋质感。
 
-Boss直聘助手, 皆在减少投递简历的麻烦, 和提高投递简历的效率, 技术栈使用WXT + Vue3 + element-plus, 开源在 Github 欢迎前来Pr
+## 🚀 安装说明
 
-> 本项目处于积极维护状态, 一直很忙所以拖了比较久才开源，抱歉了~
+1. 下载最新发布的 ZIP 安装包（目前支持 Chrome, Edge, Firefox）。
+2. 在浏览器中打开“扩展程序”管理页面（如 Chrome 的 `chrome://extensions/`）。
+3. 开启“开发者模式”。
+4. 选择“加载已解压的扩展程序”，并选择 `boss-seeker` 目录即可安装。
 
-## 相关链接
+## 💡 使用指南
 
-Github开源地址: <https://github.com/ocyss/boos-helper>
+1. **配置大模型 (AI 配置)**
+   在插件配置界面，前往“AI 智能大脑”。点击右上角的“配置模型”，你可以自由添加任何兼容 OpenAI 格式的 API（推荐使用 DeepSeek）。填入接口地址与 API Key 后即可。
+2. **初始化数据**
+   在投递前，Boss-Seeker 会自动获取你在 BOSS 直聘的在线简历作为 AI 参考素材。
+3. **开启自动巡航**
+   在搜索框中配置或使用 AI 生成合适的关键词，开启自动巡航功能，让 AI 为你全天候智能找工作。
 
-飞书反馈问卷(匿名): <https://gai06vrtbc0.feishu.cn/share/base/form/shrcnmEq2fxH9hM44hqEnoeaj8g>
+## 🤝 贡献与反馈
 
-> 每个提交都会给我发通知，我看见就会评论的形式回复 一般 1-2天
-
-飞书问卷结果: <https://gai06vrtbc0.feishu.cn/share/base/view/shrcnrg8D0cbLQc89d7Jj7AZgMc>
-
-greasyfork地址(0.2旧版本): <https://greasyfork.org/zh-CN/scripts/491340>
-
-## 项目预览
-
-[![卡片状态](docs/img/shot_2024-04-14_23-08-03.png)](docs/img/shot_2024-04-14_23-08-03.png)
-[![账户配置](docs/img/shot_2024-04-14_23-09-05.png)](docs/img/shot_2024-04-14_23-09-05.png)
-[![统计界面](docs/img/shot_2024-04-02_22-25-25.png)](docs/img/shot_2024-04-02_22-25-25.png)
-[![配置界面](docs/img/shot_2024-04-02_22-26-54.png)](docs/img/shot_2024-04-02_22-26-54.png)
-[![日志界面](docs/img/shot_2024-04-02_22-32-25.png)](docs/img/shot_2024-04-02_22-32-25.png)
-
-## TODO
-
-- [x] 优化UI去除广告
-- [x] 批量投递简历
-- 高级筛选
-  - [x] 薪资,公司名,工作名,人数,内容简单筛选
-  - 公司地址相关
-    > 使用高德api，需要自行申请，或者使用关键字筛选, 暂时只有驾车和步行
-    - [x] 驾车/步行距离
-    - [x] 驾车/步行时间
-  - [ ] 公司风险评控
-  - [x] AI筛选
-- 自动打招呼
-  - [x] 模板语言
-  - [x] 支持chatGPT
-- AI赋能
-  - [ ] 自动回复聊天
-  - [x] 多模型管理
-- 额外功能(有时间会写)
-  - [ ] 暗黑模式 （停更中~）
-  - [x] 自适应UI适配手机
-  - [ ] 黑名单
-  - [x] 多账号管理
-  - [ ] 聊天屏蔽已读消息
-  - [ ] boss消息弹窗
-
-## 参与贡献
-
-1. Fork 本仓库并克隆到本地。
-2. 在新分支上进行您的更改：`git checkout -b 您的分支名称`
-3. 提交更改：`git commit -am '描述您的更改'`
-4. 推送更改到您的 Fork：`git push origin 您的分支名称`
-5. 提交 Pull 请求。
-
-## 鸣谢
-
-- <https://github.com/yangfeng20/boss_batch_push>
-- <https://github.com/lisonge/vite-plugin-monkey>
-- <https://github.com/chatanywhere/GPT_API_free>
-
-- <https://uiverse.io/>
-- <https://www.runoob.com/manual/mqtt/protocol/MQTT-3.1.1-CN.pdf>
-
-## 类似项目
-
-- <https://github.com/Frrrrrrrrank/auto_job__find__chatgpt__rpa>
-- <https://github.com/noBaldAaa/find-job>
-
-## 最后
-
-嗯...
-
-## Star 趋势
-
-<a href="https://star-history.com/#ocyss/boos-helper&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ocyss/boos-helper&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ocyss/boos-helper&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ocyss/boos-helper&type=Date" />
- </picture>
-</a>
+欢迎提交 Issue 和 Pull Request，共同打造最好用的求职 AI 助手！

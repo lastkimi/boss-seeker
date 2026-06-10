@@ -270,6 +270,7 @@ async function copyOnlineResume() {
     width="70%"
     align-center
     destroy-on-close
+    append-to-body
     :z-index="20"
   >
     <div v-if="data === 'aiFiltering'">
@@ -389,11 +390,11 @@ async function copyOnlineResume() {
   </ElDialog>
   <ElDialog
     v-model="testDialog"
-    title="Prompt 测试"
-    width="800"
-    height="80vh"
+    title="模型测试"
+    width="80%"
     align-center
     draggable
+    append-to-body
     :z-index="21"
     :close-on-press-escape="false"
     :close-on-click-modal="false"

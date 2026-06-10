@@ -12,7 +12,6 @@ import type {
   SalaryError,
   UnknownError,
 } from '@/types/deliverError'
-import type { amapDistance, amapGeocode } from '@/utils/amap'
 
 import type { MyJobListData } from './jobs'
 
@@ -30,10 +29,6 @@ export type logErr =
 export interface logData {
   listData: MyJobListData
   el?: Element
-  amap?: {
-    geocode?: Awaited<ReturnType<typeof amapGeocode>>
-    distance?: Awaited<ReturnType<typeof amapDistance>>
-  }
   bossData?: bossZpBossData
   message?: string
   state?: string

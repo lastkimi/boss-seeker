@@ -15,39 +15,7 @@ import { logger } from '@/utils/logger'
 
 type SignedKeyInfo = components['schemas']['KeyInfo']
 
-export interface NetConf {
-  version: string
-  version_description?: string
-  notification: (NotificationAlert | NotificationMessage | NotificationNotification)[]
-  store?: Record<string, [string, string, string]>
-  price_info?: {
-    signedKey: number
-    account: number
-    update_time: string
-  }
-  feedback: string
-}
 
-export interface NotificationAlert {
-  key: string
-  type: 'alert'
-  data: import('element-plus').AlertProps
-}
-
-export interface NotificationMessage {
-  key: string
-  type: 'message'
-  data: { title?: string; content: string; duration?: number }
-}
-
-export interface NotificationNotification {
-  key: string
-  type: 'notification'
-  data: import('element-plus').NotificationProps & {
-    url?: string
-    duration?: number
-  }
-}
 
 // logger.debug("import.meta.env",import.meta.env)
 
@@ -99,9 +67,6 @@ export const useSignedKey = defineStore('signedKey', () => {
   const signedKeyStorageKey = 'sync:signedKey'
   const signedKeyInfoStorageKey = 'sync:signedKeyInfo'
   const user = useUser()
-  const netConf = ref<NetConf>()
-
-  const netNotificationMap = new Map<string, boolean>()
 
   const client = createClient<paths>({ baseUrl })
 
@@ -146,44 +111,7 @@ export const useSignedKey = defineStore('signedKey', () => {
     { throttle: 2000 },
   )
 
-  async function netNotification(
-    item: NotificationAlert | NotificationMessage | NotificationNotification,
-    now: number = 0,
-  ) {
-    if (now !== 0 && now < (await counter.storageGet(`local:netConf-${item.key}`, 0))) {
-      return
-    }
-    if (netNotificationMap.has(item.key)) {
-      return
-    }
-    netNotificationMap.set(item.key, true)
-    if (item.type === 'message') {
-      void ElMessageBox.alert(item.data.content, item.data.title ?? 'message', {
-        ...item.data,
-        confirmButtonText: 'OK',
-        callback: () => {
-          void counter.storageSet(
-            `local:netConf-${item.key}`,
-            now + (item.data.duration ?? 86400) * 1000,
-          )
-        },
-      })
-    } else if (item.type === 'notification') {
-      void ElNotification({
-        ...item.data,
-        duration: 0,
-        onClose() {
-          void counter.storageSet(
-            `local:netConf-${item.key}`,
-            now + (item.data.duration ?? 86400) * 1000,
-          )
-        },
-        onClick() {
-          item.data.url ?? window.open(item.data.url)
-        },
-      })
-    }
-  }
+
 
   async function getSignedKeyInfo(token?: string) {
     const headers: Record<string, string | undefined> = {
@@ -201,14 +129,6 @@ export const useSignedKey = defineStore('signedKey', () => {
   }
 
   async function refreshSignedKeyInfo(token?: string) {
-    void client.GET('/config').then(async ({ data }) => {
-      netConf.value = data as NetConf
-      window.__q_netConf = () => netConf.value
-      const now = new Date().getTime()
-      return Promise.all(
-        netConf.value?.notification.map(async (item) => netNotification(item, now)) ?? [],
-      )
-    })
     if (token == null && (signedKey.value == null || signedKey.value === '')) {
       return false
     }
@@ -285,15 +205,13 @@ export const useSignedKey = defineStore('signedKey', () => {
     signedKey,
     signedKeyBak,
     client,
-    netConf,
+    signedKeyInfo,
     signedKeyReqHandler,
     initSignedKey,
     sdbmCode,
     updateResume,
     getSignedKeyInfo,
     refreshSignedKeyInfo,
-    signedKeyInfo,
-    netNotification,
   }
 })
 

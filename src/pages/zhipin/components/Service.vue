@@ -243,7 +243,7 @@ async function buyKey() {
   }
   try {
     buyDialogStatus.value = 'key'
-    buyOrderName.value = `购买密钥 ${signedKey.netConf?.price_info?.signedKey ?? 15}元`
+    buyOrderName.value = `购买密钥 15元`
     const response = await buy(async (userId: string, backupUserId?: string) => {
       buySignal = new AbortController()
       const res = await signedKey.client.POST('/v1/key/purchase_key', {
@@ -292,7 +292,7 @@ async function buyKey() {
 
 async function buyAccount() {
   buyDialogStatus.value = 'account'
-  buyOrderName.value = `购买账号位 ${signedKey.netConf?.price_info?.account ?? 5}元`
+  buyOrderName.value = `恢复密钥 2元`
   await buy(async () => {
     buySignal = new AbortController()
     const res = await signedKey.client.POST('/v1/key/purchase_account', {
@@ -439,7 +439,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <ElForm>
+  <ElForm class="bh-glass-panel">
     <ElAlert
       style="margin-bottom: 10px"
       show-icon
@@ -479,15 +479,16 @@ onMounted(() => {
         <template v-if="!signedKey.signedKey">
           <ElButton type="primary" :loading="loading" @click="bindKey"> 绑定密钥 </ElButton>
           <ElButton type="success" :loading="loading" @click="buyKey">
-            购买密钥 {{ signedKey.netConf?.price_info?.signedKey ?? 15 }}元
+            购买密钥 15元
           </ElButton>
         </template>
         <template v-else>
           <ElButton type="success" :loading="loading" @click="updateResume"> 更新简历 </ElButton>
           <ElButton type="success" :loading="loading" @click="openBalance"> 余额充值 </ElButton>
           <ElButton type="success" :loading="loading" @click="buyAccount">
-            账号位 {{ signedKey.netConf?.price_info?.account ?? 5 }}元
+            账号位 5元
           </ElButton>
+          <ElLink href="https://jq.qq.com/?_wv=1027&k=a26uV3oG" type="primary" style="margin-left: 10px;">加群 953835626 反馈</ElLink>
           <ElButton type="success" :loading="loading" @click="contact"> 联系作者 </ElButton>
           <ElButton type="warning" :loading="loading" @click="unbindKey"> 解绑 </ElButton>
         </template>

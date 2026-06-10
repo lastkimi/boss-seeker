@@ -219,39 +219,13 @@ function getActiveTimeType(activeTime?: number): 'success' | 'warning' | 'danger
 
   &:focus-within,
   &.job-card-hover:hover {
-    transform: translateY(-1rem) rotate(3deg);
-  }
-
-  &:focus-within ~ &,
-  &.job-card-hover:hover ~ & {
-    transform: translateX(130px);
-  }
-
-  &:first-child:focus-within,
-  &:first-child.job-card-hover:hover {
-    transform: translate(-0.5rem, -1rem) rotate(3deg);
-  }
-
-  &:not(:first-child) {
-    margin-left: -130px;
-    box-shadow: -3rem 0 3rem -3rem #b4adad;
+    transform: translateY(-0.5rem);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
   }
 
   @media (max-width: 1200px) {
     & {
       min-width: 250px;
-    }
-
-    &:not(:first-child) {
-      margin-left: -30px;
-    }
-
-    &.job-card-hover:hover {
-      transform: translateY(-1rem);
-    }
-
-    &.job-card-hover:hover ~ & {
-      transform: translateX(30px);
     }
   }
 }
@@ -287,10 +261,6 @@ html.dark {
       .company-name {
         color: #fff;
       }
-    }
-
-    &:not(:first-child) {
-      box-shadow: -3rem 0 3rem -3rem #000;
     }
   }
 }

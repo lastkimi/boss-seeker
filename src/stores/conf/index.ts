@@ -5,7 +5,7 @@ import { reactive, ref, toRaw } from 'vue'
 
 import { counter } from '@/message'
 import { useUser } from '@/stores/user'
-import type { ConfigLevel, FormData } from '@/types/formData'
+import type { FormData } from '@/types/formData'
 import deepmerge, { jsonClone } from '@/utils/deepmerge'
 import { exportJson, importJson } from '@/utils/jsonImportExport'
 import { logger } from '@/utils/logger'
@@ -24,14 +24,6 @@ export const useConf = defineStore('conf', () => {
     [
       '20250826',
       (from) => {
-        if (from.salaryRange && typeof from.salaryRange.value === 'string') {
-          const [min, max] = (from.salaryRange.value as string).split('-').map(Number)
-          from.salaryRange.value = [min, max, false]
-        }
-        if (from.companySizeRange && typeof from.companySizeRange.value === 'string') {
-          const [min, max] = (from.companySizeRange.value as string).split('-').map(Number)
-          from.companySizeRange.value = [min, max, false]
-        }
         return from
       },
     ],
@@ -63,6 +55,16 @@ export const useConf = defineStore('conf', () => {
         }
       } else if (uid != null && from.userId == null) {
         from.userId = uid
+      }
+
+      if (from.aiGreeting && !from.aiGreeting.prompt) {
+        from.aiGreeting.prompt = defaultFormData.aiGreeting.prompt
+      }
+      if (from.aiFiltering && !from.aiFiltering.prompt) {
+        from.aiFiltering.prompt = defaultFormData.aiFiltering.prompt
+      }
+      if (from.aiReply && !from.aiReply.prompt) {
+        from.aiReply.prompt = defaultFormData.aiReply.prompt
       }
     } catch (err) {
       logger.error('用户配置初始化失败', err)
@@ -154,21 +156,7 @@ export const useConf = defineStore('conf', () => {
     ElMessage.success('配置清空成功, 不会自动保存, 请手动保存或重载恢复')
   }
 
-  const order: Record<ConfigLevel, number> = {
-    beginner: 1,
-    intermediate: 2,
-    advanced: 3,
-    expert: 4,
-  }
 
-  const config_level = reactiveComputed(() => {
-    const val = order[formData.config_level]
-    return {
-      intermediate: order['intermediate'] <= val,
-      advanced: order['advanced'] <= val,
-      expert: order['expert'] <= val,
-    }
-  })
 
   return {
     confInit: init,
@@ -182,7 +170,6 @@ export const useConf = defineStore('conf', () => {
     defaultFormData,
     formData,
     isLoaded,
-    config_level,
   }
 })
 

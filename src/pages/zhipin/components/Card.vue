@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { ElSwitch } from 'element-plus'
+import { ElSwitch, ElRadioGroup, ElRadioButton } from 'element-plus'
 import type { ComponentPublicInstance } from 'vue'
 import { ref, watch } from 'vue'
 
 import JobCard from '@/components/JobCard.vue'
+import JobTable from '@/components/JobTable.vue'
 import type { EncryptJobId } from '@/stores/jobs'
 import { jobList } from '@/stores/jobs'
 
@@ -13,18 +14,12 @@ const deliver = useDeliver()
 const jobSetRef = ref<Record<EncryptJobId, Element | ComponentPublicInstance | null>>({})
 const autoScroll = ref(true)
 const cards = ref<HTMLDivElement>()
+const viewMode = ref<'grid' | 'table'>('table')
 
-function scroll(e: any) {
-  e.preventDefault()
-  if (!cards.value) {
-    return
-  }
-  const left = -e.wheelDelta || e.deltaY / 2
-  cards.value.scrollLeft = cards.value.scrollLeft + left
-  autoScroll.value = false
-}
+// Vertical scrolling is native now, no need to intercept wheel events
 
 function scrollHandler() {
+  if (viewMode.value !== 'grid') return
   if (!deliver.currentData?.encryptJobId) {
     return
   }
@@ -59,7 +54,29 @@ watch(
 
 <template>
   <div style="order: -1" class="boss-helper-card">
-    <div ref="cards" class="card-grid" @wheel.stop="scroll">
+    <div class="view-controls">
+      <ElRadioGroup v-model="viewMode" size="small">
+        <ElRadioButton label="table" value="table">列表视图</ElRadioButton>
+        <ElRadioButton label="grid" value="grid">卡片视图</ElRadioButton>
+      </ElRadioGroup>
+      <ElSwitch
+        v-model="autoScroll"
+        inline-prompt
+        active-text="自动滚动"
+        inactive-text="自动滚动"
+        style="margin-left: 15px;"
+        @change="
+          (v) => {
+            if (v) {
+              scrollHandler()
+            }
+          }
+        "
+      />
+    </div>
+
+    <JobTable v-if="viewMode === 'table'" :jobs="jobList.list" />
+    <div v-else ref="cards" class="card-grid">
       <JobCard
         v-for="job in jobList.list"
         :ref="
@@ -73,24 +90,20 @@ watch(
       />
     </div>
     <div class="card-grid-overlay" />
-    <ElSwitch
-      v-model="autoScroll"
-      inline-prompt
-      active-text="自动滚动"
-      inactive-text="自动滚动"
-      @change="
-        (v) => {
-          if (v) {
-            scrollHandler()
-          }
-        }
-      "
-    />
   </div>
 </template>
 
 <style lang="scss" scoped>
 // https://css-tricks.com/
+// https://uiverse.io/Subaashbala/polite-newt-9
+
+.view-controls {
+  padding: 10px 15px;
+  background: var(--el-bg-color);
+  border-bottom: 1px solid var(--el-border-color-light);
+  display: flex;
+  align-items: center;
+}
 // https://uiverse.io/Subaashbala/polite-newt-9
 
 .boss-helper-card {
@@ -102,16 +115,15 @@ watch(
 
 .card-grid {
   display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   margin: 0 0 1.5rem;
   position: relative;
-  overflow-x: scroll;
+  overflow-y: auto;
+  max-height: 80vh;
   scrollbar-color: #c6c6c6 #e9e9e9;
   scrollbar-gutter: always;
-  padding: 3rem 0 3rem 2rem;
-  margin: 0;
-  display: flex;
+  padding: 1rem;
   color: #000;
   -webkit-overflow-scrolling: touch;
   &::-webkit-scrollbar {

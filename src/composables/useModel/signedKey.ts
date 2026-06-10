@@ -42,6 +42,7 @@ export class SignedKeyLLM {
       data: bossZpJobItemData
       boss?: bossZpBossData
       card: bossZpCardData
+      resumeStr?: string
     }
   }): Promise<messageReps> {
     const res = await this.client.POST('/v1/llm/invoke/greetings', {
@@ -52,6 +53,7 @@ export class SignedKeyLLM {
           data: data.data.data as any,
           card: data.data.card as any,
           boss: data.data.boss as any,
+          resumeStr: (data.data as any).resumeStr,
         },
       },
     })
@@ -71,6 +73,7 @@ export class SignedKeyLLM {
       data: bossZpJobItemData
       boss?: bossZpBossData
       card: bossZpCardData
+      resumeStr?: string
     }
     amap?: string
   }): Promise<messageReps> {
@@ -102,6 +105,7 @@ export class SignedKeyLLM {
         data: bossZpJobItemData
         boss?: bossZpBossData
         card: bossZpCardData
+        resumeStr?: string
       }
       amap?: string
     },

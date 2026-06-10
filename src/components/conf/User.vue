@@ -115,7 +115,7 @@ function handleCurrentChange(val: CookieInfo | undefined) {
       style="width: 100%"
       highlight-current-row
       table-layout="auto"
-      @current-change="handleCurrentChange"
+      @current-change="handleCurrentChange as any"
     >
       <ElTableColumn type="index" width="40" />
       <ElTableColumn label="账户">

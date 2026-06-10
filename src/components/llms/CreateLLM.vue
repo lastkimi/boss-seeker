@@ -189,6 +189,7 @@ function create() {
     align-center
     destroy-on-close
     draggable
+    append-to-body
     :z-index="20"
   >
     <ElScrollbar height="60vh" style="padding: 20px">
@@ -232,6 +233,7 @@ function create() {
     width="50%"
     align-center
     draggable
+    append-to-body
     :z-index="21"
     :close-on-press-escape="false"
     :close-on-click-modal="false"

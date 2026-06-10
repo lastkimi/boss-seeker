@@ -5,13 +5,15 @@ import { ref } from 'vue'
 import { cachePipelineResult, createHandle, sendPublishReq } from '@/composables/useApplying'
 import { useCommon } from '@/composables/useCommon'
 import { useStatistics } from '@/composables/useStatistics'
+import { useRecords } from '@/composables/useRecords'
+import { useAutoPilot } from '@/composables/useAutoPilot'
 import { useConf } from '@/stores/conf'
 import type { MyJobListData } from '@/stores/jobs'
 import { jobList } from '@/stores/jobs'
 import type { logData, logErr } from '@/stores/log'
 import { useLog } from '@/stores/log'
 import { BoosHelperError, LimitError, RateLimitError, UnknownError } from '@/types/deliverError'
-import { delay, getCurDay, notification } from '@/utils'
+import { delay, getCurDay, getCurTime, notification } from '@/utils'
 import { logger } from '@/utils/logger'
 
 export const useDeliver = defineStore('zhipin/deliver', () => {
@@ -20,6 +22,7 @@ export const useDeliver = defineStore('zhipin/deliver', () => {
   const currentData = ref<MyJobListData>()
   const log = useLog()
   const statistics = useStatistics()
+  const records = useRecords()
   const common = useCommon()
   const conf = useConf()
 
@@ -61,15 +64,41 @@ export const useDeliver = defineStore('zhipin/deliver', () => {
             await h({ data }, ctx)
           }
           log.add(data, null, ctx, ctx.message)
+          records.addRecord({
+            id: data.encryptJobId,
+            date: getCurTime(),
+            jobName: data.jobName || '',
+            companyName: data.brandName || '',
+            hrName: data.bossName || '',
+            status: 'success',
+            message: '投递成功',
+          })
           statistics.todayData.success++
+          const autoPilot = useAutoPilot()
+          if (autoPilot.state.isActive) {
+            autoPilot.state.currentKeywordCount++
+            await autoPilot.saveState()
+          }
           data.status.setStatus('success', '投递成功')
           logger.debug('投递成功', ctx)
           ctx.state = '成功'
+          
           if (statistics.todayData.success >= conf.formData.deliveryLimit.value) {
-            const msg = `投递到达上限 ${conf.formData.deliveryLimit.value}，已暂停投递`
+            const msg = `投递到达全局上限 ${conf.formData.deliveryLimit.value}，已暂停投递`
             conf.formData.notification.value && (await notification(msg))
             ElMessage.info(msg)
             common.deliverStop = true
+            return
+          }
+
+          if (autoPilot.state.isActive && autoPilot.state.currentKeywordCount >= autoPilot.state.keywordLimit) {
+            const msg = `当前关键词 [${autoPilot.getCurrentKeyword()}] 投递到达上限 ${autoPilot.state.keywordLimit}，准备切换下一个关键词`
+            ElMessage.info(msg)
+            logger.info(msg)
+            common.deliverStop = true
+            setTimeout(() => {
+              autoPilot.nextKeyword()
+            }, 3000)
             return
           }
           const date = getCurDay()
@@ -78,17 +107,9 @@ export const useDeliver = defineStore('zhipin/deliver', () => {
               date,
               success: 0,
               total: 0,
-              company: 0,
-              jobTitle: 0,
-              jobContent: 0,
-              hrPosition: 0,
-              salaryRange: 0,
-              companySizeRange: 0,
               activityFilter: 0,
               goldHunterFilter: 0,
               repeat: 0,
-              jobAddress: 0,
-              amap: 0,
             })
           }
         } catch (e: any) {
@@ -101,6 +122,15 @@ export const useDeliver = defineStore('zhipin/deliver', () => {
             (e.name as string) ?? '没有消息',
           )
           log.add(data, e as logErr, ctx)
+          records.addRecord({
+            id: data.encryptJobId,
+            date: getCurTime(),
+            jobName: data.jobName || '',
+            companyName: data.brandName || '',
+            hrName: data.bossName || '',
+            status: e.state === 'warning' ? 'warn' : 'error',
+            message: e.message ?? '未知原因',
+          })
           logger.warn('投递过滤', ctx)
           ctx.state = '过滤'
           ctx.err = e.message ?? ''

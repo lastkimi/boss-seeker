@@ -25,9 +25,7 @@ import { logger } from '@/utils/logger'
 
 import { useDeliver } from '../hooks/useDeliver'
 import { usePager } from '../hooks/usePager'
-import About from './About.vue'
 import Card from './Card.vue'
-import Config from './Config.vue'
 import Logs from './Logs.vue'
 import Service from './Service.vue'
 import Statistics from './Statistics.vue'
@@ -42,7 +40,6 @@ const { todayData } = useStatistics()
 const conf = useConf()
 
 const helpVisible = ref(false)
-const searchRef = ref()
 const tabsRef = ref()
 const helpContent = ref('鼠标移到对应元素查看提示')
 const { isOutside } = useMouseInElement(tabsRef)
@@ -108,12 +105,12 @@ onMounted(async () => {
   if (location.href.includes('/web/geek/job-recommend')) {
     elmGetter.get<HTMLDivElement>('.job-recommend-search').then((searchEl) => {
       searchEl.style.position = 'unset'
-      searchRef.value.$el.appendChild(searchEl)
+      document.getElementById('ehp-native-filter')?.appendChild(searchEl)
     })
   } else if (location.href.includes('/web/geek/jobs')) {
     const div = document.createElement('div')
     div.style.cssText = 'display: flex;flex-direction: column;gap: 15px;'
-    searchRef.value.$el.appendChild(div)
+    document.getElementById('ehp-native-filter')?.appendChild(div)
     elmGetter
       .get<HTMLDivElement>([
         '.page-jobs-main .expect-and-search',
@@ -138,8 +135,11 @@ onMounted(async () => {
         '.job-search-wrapper .search-condition-wrapper.clearfix',
       ])
       .then(([searchEl, conditionEl]) => {
-        searchRef.value.$el.appendChild(searchEl)
-        searchRef.value.$el.appendChild(conditionEl)
+        const target = document.getElementById('ehp-native-filter')
+        if (target) {
+          target.appendChild(searchEl)
+          target.appendChild(conditionEl)
+        }
         // 搜索栏去APP
         elmGetter.rm('.job-search-scan', searchEl)
       })
@@ -167,7 +167,7 @@ function tagOpen(url: string) {
 const VITE_VERSION = __APP_VERSION__
 
 const isDot = computed(() => {
-  return (signedKey.netConf?.version ?? '0') > VITE_VERSION
+  return false
 })
 
 function openStore() {
@@ -177,8 +177,8 @@ function openStore() {
 
 <template>
   <ElConfigProvider namespace="ehp">
-    <h2 style="display: flex; align-items: center">
-      Helper
+    <h2 style="display: flex; align-items: center; font-weight: 800; font-size: 24px; margin-bottom: 20px; background: -webkit-linear-gradient(45deg, #0ea5e9, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+      Boss-Seeker
       <ElBadge
         :is-dot="isDot"
         :offset="[-2, 7]"
@@ -198,18 +198,6 @@ function openStore() {
       style="z-index: 999; position: fixed; pointer-events: none; border-width: 1px"
       :style="boxStyles"
     />
-    <div v-if="signedKey.netConf && signedKey.netConf.notification" class="netAlerts">
-      <template
-        v-for="item in signedKey.netConf.notification.filter((item) => item.type === 'alert')"
-        :key="item.key ?? item.data.title"
-      >
-        <!-- <ElAlert
-        v-if="now > GM_getValue(`netConf-${item.key}`, 0)"
-        v-bind="item.data"
-        @close="GM_setValue(`netConf-${item.key}`, now + 259200000)"
-      /> -->
-      </template>
-    </div>
     <ElTooltip :visible="helpVisible && !isOutside" :virtual-ref="triggerRef">
       <template #content>
         <div :style="`width: auto;max-width:${boxStyles.width};font-size:17px;`">
@@ -218,44 +206,14 @@ function openStore() {
       </template>
     </ElTooltip>
     <ElTabs ref="tabsRef" data-help="鼠标移到对应元素查看提示">
-      <ElTabPane label="统计" data-help="失败是成功她妈">
+      <ElTabPane label="统计与配置" data-help="失败是成功她妈">
         <Statistics />
-      </ElTabPane>
-      <ElTabPane ref="searchRef" label="筛选" />
-      <ElTabPane label="配置" Alertdata-help="好好看，好好学">
-        <Config />
       </ElTabPane>
       <ElTabPane v-if="signedKey.signedKey" label="AI" data-help="AI时代，脚本怎么能落伍!">
         <Service />
       </ElTabPane>
       <ElTabPane label="日志" data-help="反正你也不看">
         <Logs />
-      </ElTabPane>
-      <ElTabPane
-        label="关于&赞赏"
-        class="hp-about-box"
-        data-help="项目是写不完美的,但总要去追求完美"
-      >
-        <About />
-      </ElTabPane>
-      <ElTabPane v-if="signedKey.netConf && signedKey.netConf.feedback">
-        <template #label>
-          <ElLink
-            size="large"
-            style="height: 100%"
-            @click.stop="tagOpen(signedKey.netConf.feedback)"
-          >
-            反馈
-          </ElLink>
-        </template>
-      </ElTabPane>
-      <ElTabPane>
-        <template #label>
-          <ElCheckbox v-model="helpVisible" label="帮助" size="large" @click.stop="" />
-        </template>
-        我去, 给你发现小彩蛋了哇! 不过这里啥都没有, 但还是要谢谢你来查看帮助. 虽然点歪了一些些...
-        <br />
-        文案不理解的可以提供建议进行调整
       </ElTabPane>
     </ElTabs>
     <Teleport to="#boss-helper-job-warp,.page-job-inner .page-job-content">
@@ -286,16 +244,6 @@ function openStore() {
   }
 }
 
-.hp-about-box {
-  display: flex;
-  .hp-about {
-    display: flex;
-    flex-direction: column;
-  }
-  html.dark & {
-    color: #cfd3dc;
-  }
-}
 
 .ehp-checkbox {
   color: #5e5e5e;

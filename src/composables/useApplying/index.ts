@@ -2,7 +2,6 @@ import { PipelineCacheManager } from '@/composables/usePipelineCache'
 import type { JobStatus } from '@/stores/jobs'
 import { JobAddressError, UnknownError } from '@/types/deliverError'
 import type { PipelineCacheItem, ProcessorType } from '@/types/pipelineCache'
-import { amapDistance, amapGeocode } from '@/utils/amap'
 import { logger } from '@/utils/logger'
 
 import { handles } from './handles'
@@ -70,10 +69,6 @@ export async function createHandle(): Promise<{
     h.communicated(), // 已沟通过滤
     h.SameCompanyFilter(), // 相同公司过滤
     h.SameHrFilter(), // 相同hr过滤
-    h.jobTitle(), // 岗位名筛选
-    h.company(), // 公司名筛选
-    h.salaryRange(), // 薪资筛选
-    h.companySizeRange(), // 公司规模筛选
     h.goldHunterFilter(), // 猎头过滤
     [
       // Card卡片信息获取
@@ -85,29 +80,7 @@ export async function createHandle(): Promise<{
         }
       },
       h.activityFilter(), // 活跃度过滤
-      h.hrPosition(), // Hr职位筛选
-      h.jobAddress(), // 工作地址筛选
       h.jobFriendStatus(), // 好友状态过滤
-      h.jobContent(), // 工作内容筛选
-      [
-        // 高德地图
-        async (args, ctx) => {
-          ctx.amap ??= {}
-          try {
-            ctx.amap.geocode = await amapGeocode(
-              args.data.card?.address ?? args.data.card?.jobInfo.address ?? '',
-            ) // TODO: 直接使用经纬度
-            if (!ctx.amap.geocode?.location) {
-              throw new JobAddressError('未获取到地址经纬度')
-            }
-            ctx.amap.distance = await amapDistance(ctx.amap.geocode.location)
-          } catch (e) {
-            logger.error('高德地图错误', e)
-            throw new JobAddressError(`错误: ${e instanceof Error ? e.message : '未知'}`)
-          }
-        },
-        h.amap(),
-      ],
       h.aiFiltering(), // AI过滤
       h.greeting(), // 招呼语
     ],
